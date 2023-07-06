@@ -1,7 +1,7 @@
 const mongoose = require("../db/conn"); //trocar para connection
 const { Schema } = mongoose;
 
-const Pet = mongoose.Model(
+const Pet = mongoose.model(
   "Pet",
   new Schema(
     {
