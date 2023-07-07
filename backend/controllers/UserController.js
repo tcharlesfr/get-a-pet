@@ -1,7 +1,10 @@
+const createUserToken = require("../helpers/create-user-token");
 const User = require("../models/User");
+const bcrypt = require('bcrypt')
 
 module.exports = class UserController {
   static async register(req, res) {
+    // original desestruturado ex: {name, email, etc}
     const name = req.body.name;
     const email = req.body.email;
     const phone = req.body.phone;
@@ -41,11 +44,37 @@ module.exports = class UserController {
     //chegar se o usuario já existe
     const userExists = await User.findOne({ email: email });
 
-    if (userExists){
+    if (userExists) {
       res.status(422).json({
-        message: "por favor, utilize outro e-mail"
-      })
-      return
+        message: "por favor, utilize outro e-mail",
+      });
+      return;
+    }
+
+    // criar senha
+    // adicionando criptografia, adicionando 12 caracteres a mais
+    // fortificando a senha do usuario, mesmo vaze a senha e alguem queria fazer
+    // engenharia reversa vai ser muito dificil pois n vai saber os parametros adicionados
+    const salt = await bcrypt.genSalt(12);
+    const passwordHash = await bcrypt.hash(password, salt);
+
+    //criar usuario
+    const user = new User({
+      // original apenas o campo ex: "name"
+      name: name,
+      email: email,
+      phone: phone,
+      password: passwordHash,
+    });
+
+    try {
+      const newUser = await user.save();
+
+      //
+      await createUserToken(newUser, req, res);
+      return;
+    } catch (error) {
+      res.status(500).json({ message: error });
     }
   }
 };
