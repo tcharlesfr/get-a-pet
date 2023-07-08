@@ -1,6 +1,10 @@
 const createUserToken = require("../helpers/create-user-token");
+const getToken = require("../helpers/get-token");
+
 const User = require("../models/User");
+
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken")
 
 module.exports = class UserController {
   static async register(req, res) {
@@ -104,7 +108,7 @@ module.exports = class UserController {
 
     //checando a senha do banco de dados
     // o bcrypt descriptografa e compara as senhas
-    const checkPassword = await bcrypt.compare(password, user.password)
+    const checkPassword = await bcrypt.compare(password, user.password);
     // mudar para verificação dupla, ou os dois com a mesma mensagem a fim
     // de não informar o que esta errado, mais proteção contra invasões
     if (!checkPassword) {
@@ -115,5 +119,28 @@ module.exports = class UserController {
     }
     //criando token
     await createUserToken(user, req, res);
+  }
+
+  //envia null ou o usuario que existe
+  static async checkUser(req, res) {
+    let currentUser;
+
+    console.log(req.headers.authorization);
+
+    if (req.headers.authorization) {
+      //recebe o token e depois decodifica
+      const token = getToken(req);
+      const decoded = jwt.verify(token, "nossosecret");
+
+      currentUser = await User.findById(decoded.id);
+
+      // zerando a senha do usuario a ser enviado
+      currentUser.password = undefined;
+      // retorna null ou usuario atual
+    } else {
+      currentUser = null;
+    }
+
+    res.status(200).send(currentUser);
   }
 };
