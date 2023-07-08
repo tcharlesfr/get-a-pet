@@ -1,6 +1,6 @@
 const createUserToken = require("../helpers/create-user-token");
 const User = require("../models/User");
-const bcrypt = require('bcrypt')
+const bcrypt = require("bcrypt");
 
 module.exports = class UserController {
   static async register(req, res) {
@@ -76,5 +76,44 @@ module.exports = class UserController {
     } catch (error) {
       res.status(500).json({ message: error });
     }
+  }
+
+  //login
+  static async login(req, res) {
+    const { email, password } = req.body;
+
+    if (!email) {
+      res.status(422).json({ message: "o email é obrigatorio" });
+      return;
+    }
+
+    if (!password) {
+      res.status(422).json({ message: "a password é obrigatorio" });
+      return;
+    }
+
+    //chegar se o usuario já existe
+    const user = await User.findOne({ email: email });
+
+    if (!user) {
+      res.status(422).json({
+        message: "não existe usuario com este email",
+      });
+      return;
+    }
+
+    //checando a senha do banco de dados
+    // o bcrypt descriptografa e compara as senhas
+    const checkPassword = await bcrypt.compare(password, user.password)
+    // mudar para verificação dupla, ou os dois com a mesma mensagem a fim
+    // de não informar o que esta errado, mais proteção contra invasões
+    if (!checkPassword) {
+      res.status(422).json({
+        message: "senha errada",
+      });
+      return;
+    }
+    //criando token
+    await createUserToken(user, req, res);
   }
 };
