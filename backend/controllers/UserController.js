@@ -4,7 +4,7 @@ const getToken = require("../helpers/get-token");
 const User = require("../models/User");
 
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
 
 module.exports = class UserController {
   static async register(req, res) {
@@ -142,5 +142,22 @@ module.exports = class UserController {
     }
 
     res.status(200).send(currentUser);
+  }
+
+  static async getUserById(req, res) {
+    // pegando o id dos parametros
+    const id = req.params.id;
+    // encontrar o usuario
+    // selecionando campos e escondendo a senha
+    const user = await User.findById(id).select("-password");
+    // verificação de existencia de usuario
+    if (!user) {
+      res.status(422).json({
+        message: "não existe usuario",
+      });
+      return;
+    }
+    // retorna o usuario
+    res.status(200).json({ user });
   }
 };
