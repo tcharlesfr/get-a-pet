@@ -1,6 +1,7 @@
 // Helpers > utilizados para dar suporte as funções
 const createUserToken = require("../helpers/create-user-token");
 const getToken = require("../helpers/get-token");
+const getUserByToken = require("../helpers/get-user-by-token");
 
 const User = require("../models/User");
 
@@ -163,17 +164,81 @@ module.exports = class UserController {
     res.status(200).json({ user });
   }
 
-  static async editUser (req, res){
-    res.status(200).json({message: "ok"})
-    return
+  // EDITAR USUARIO //
+  static async editUser(req, res) {
+    //checar se o usuario existe
+    const token = getToken(req);
+    const user = await getUserByToken(token);
+
+    // original desestruturado ex: {name, email, etc}
+    const id = req.params.id;
+    const name = req.body.name;
+    const email = req.body.email;
+    const phone = req.body.phone;
+    const password = req.body.password;
+    const confirmpassword = req.body.confirmpassword;
+
+    // variavel para poder mudar a imagem
+    let image = "";
+
+    //validações //organizar melhor
+    if (!name) {
+      res.status(422).json({ message: "o nome é obrigatorio" });
+      return;
+    }
+
+    user.name = name;
+    
+    if (!email) {
+      res.status(422).json({ message: "o email é obrigatorio" });
+      return;
+    }
+
+    // find one pesquisa por campo
+    const userExists = await User.findOne({ email: email });
+
+    // verificar se o novo email já n esta cadastrado por outro usuario
+    if (user.email !== email && userExists) {
+      res.status(422).json({
+        message: "email já utilzado", //msg trocada
+      });
+      return;
+    }
+
+    user.email = email;
+
+    if (!phone) {
+      res.status(422).json({ message: "o phone é obrigatorio" });
+      return;
+    }
+
+    user.phone = phone;
+
+    if (password !== confirmpassword) {
+      res.status(422).json({ message: "as senhas não conferem" });
+      return;
+    } else if ((password === confirmpassword) & (password != null)) {
+      //verifica se o usuario realmente quer trocar a senha
+      //cria a nova senha
+      const salt = await bcrypt.genSalt(12);
+      const passwordHash = await bcrypt.hash(password, salt);
+
+      user.password = passwordHash;
+    }
+
+    //verificar se a atualização foi bem sucedida
+    try {
+      //atualiza o usuario no banco de dados
+      await User.findOneAndUpdate(
+        { _id: user._id }, // filtro
+        { $set: user }, // quais dados serão atualizados
+        { new: true } // parametro para fazer a atualização com sucesso
+      );
+
+      res.status(200).json({ message: "Usuário atualizado com sucesso!" });
+    } catch (err) {
+      res.status(500).json(err);
+      return;
+    }
   }
-
-
-
-
-
-
-
-
-
 };
