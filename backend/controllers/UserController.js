@@ -1,8 +1,10 @@
+// Helpers > utilizados para dar suporte as funções
 const createUserToken = require("../helpers/create-user-token");
 const getToken = require("../helpers/get-token");
 
 const User = require("../models/User");
 
+// cripografia e token de acesso
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
