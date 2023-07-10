@@ -128,7 +128,7 @@ module.exports = class UserController {
   static async checkUser(req, res) {
     let currentUser;
 
-    console.log(req.headers.authorization);
+    // console.log(req.headers.authorization);
 
     if (req.headers.authorization) {
       //recebe o token e depois decodifica
@@ -178,8 +178,10 @@ module.exports = class UserController {
     const password = req.body.password;
     const confirmpassword = req.body.confirmpassword;
 
-    // variavel para poder mudar a imagem
-    let image = "";
+    // verificar se veio imagem \ req.file
+    if(req.file){
+      user.image = req.file.filename
+    }
 
     //validações //organizar melhor
     if (!name) {
@@ -188,7 +190,7 @@ module.exports = class UserController {
     }
 
     user.name = name;
-    
+
     if (!email) {
       res.status(422).json({ message: "o email é obrigatorio" });
       return;
