@@ -20,9 +20,14 @@ const imageStorage = multer.diskStorage({
   },
   //como vai ficar o nome do arquivo depois de salvo
   filename: function (req, file, cb) {
-    // colocar Date para n repetir os nomes e evitando a substituição de imagens
+    // colocar Date e numero aleatorio para n repetir os nomes e evitando a substituição de imagens
     // concatenando com o formato, resultado: 13416848141681.jpg
-    cb(null, Date.now() + path.extname(file.originalname));
+    cb(
+      null,
+      Date.now() +
+        String(Math.random() * 1000) +
+        path.extname(file.originalname)
+    );
   },
 });
 

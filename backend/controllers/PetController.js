@@ -9,6 +9,8 @@ module.exports = class PetController {
   static async create(req, res) {
     const { name, age, weight, color } = req.body;
 
+    const images = req.files;
+
     // setar como disponivel logo quando criado
     const available = true;
 
@@ -29,6 +31,10 @@ module.exports = class PetController {
     }
     if (!color) {
       res.status(422).json({ message: "a cor é obrigatoria" });
+      return;
+    }
+    if (images.length === 0) {
+      res.status(422).json({ message: "a imagem é obrigatoria" });
       return;
     }
 
@@ -52,10 +58,15 @@ module.exports = class PetController {
       },
     });
 
+    // percorrer as imagens e guardar apenas o nome
+    images.map((image) => {
+      pet.images.push(image.filename)
+    })
+
     // salvando no banco de dados
     try {
       const newPet = await pet.save();
-      res.status(201).json({ message: "pet criado com sucesso", newPet });
+      res.status(201).json({ message: "pet cadastrado com sucesso", newPet });
     } catch (error) {
       res.status(500).json({ message: error });
     }
