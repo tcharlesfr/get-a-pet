@@ -105,17 +105,53 @@ module.exports = class PetController {
     // pegar o id vindo dos paramentros
     const id = req.params.id;
 
+    // checar se o id é valido
     if (!ObjectId.isValid(id)) {
       res.status(422).json({ message: "ID invalio" });
       return;
     }
 
+    // verificar se o pet existe
     const pet = await Pet.findOne({ _id: id });
 
     if (!pet) {
-      res.status(400).json({ message: "Pet não encontrado" });
+      res.status(404).json({ message: "Pet não encontrado" });
+      return
     }
 
     res.status(200).json({ pet: pet });
+  }
+
+  static async removePetById(req, res) {
+    const id = req.params.id;
+
+    // checar se o id é valido
+    if (!ObjectId.isValid(id)) {
+      res.status(422).json({ message: "ID invalio" });
+      return;
+    }
+
+    // verificar se o pet existe
+    const pet = await Pet.findOne({ _id: id });
+
+    if (!pet) {
+      res.status(404).json({ message: "Pet não encontrado" });
+      return
+    }
+
+    const token = getToken(req);
+    const user = await getUserByToken(token);
+
+    //verificar se o usuario logado é quem vai excluir o pet
+    if (pet.user._id.toString() !== user._id.toString()) {
+      res
+        .status(422)
+        .json({ message: "Houve um problema em processar a sua solicitação" });
+      return
+    }
+
+    await Pet.findByIdAndRemove(id);
+
+    res.status(200).json({ message: "Pet removido com sucesso" });
   }
 };
