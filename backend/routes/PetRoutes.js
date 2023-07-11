@@ -13,4 +13,7 @@ router.post(
   PetController.create
 );
 
+// rota publica
+router.get('/', PetController.getAll)
+
 module.exports = router;

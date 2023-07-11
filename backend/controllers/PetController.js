@@ -60,8 +60,8 @@ module.exports = class PetController {
 
     // percorrer as imagens e guardar apenas o nome
     images.map((image) => {
-      pet.images.push(image.filename)
-    })
+      pet.images.push(image.filename);
+    });
 
     // salvando no banco de dados
     try {
@@ -70,5 +70,11 @@ module.exports = class PetController {
     } catch (error) {
       res.status(500).json({ message: error });
     }
+  }
+
+  static async getAll(req, res) {
+    const pets = await Pet.find().sort("-createdAt");
+
+    res.status(200).json({ pets: pets });
   }
 };
