@@ -16,3 +16,5 @@ trocar a exportação por outra, atual: module.exports
 tirar o return de algumas função? ou mudar?
 trocar error por err, verificar qual esta
 user upadate pode receber todos os dados no final? user.name = name
+
+adicionar trycat em tudo
