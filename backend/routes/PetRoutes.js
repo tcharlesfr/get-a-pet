@@ -18,6 +18,7 @@ router.get('/', PetController.getAll)
 //privada
 router.get('/mypets', verifyToken, PetController.getAllUserPets )
 router.get('/myadoptions', verifyToken, PetController.getAllUserAdoptions )
+router.get('/:id', PetController.getPetById )
 
 
 module.exports = router;
