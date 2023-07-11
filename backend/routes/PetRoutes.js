@@ -15,5 +15,8 @@ router.post(
 
 // rota publica
 router.get('/', PetController.getAll)
+//privada
+router.get('/mypets', verifyToken, PetController.getAllUserPets )
+
 
 module.exports = router;
