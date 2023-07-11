@@ -21,7 +21,7 @@ const Pet = mongoose.model(
         type: String,
       },
       images: {
-        type: Arrey,
+        type: Array,
         required: true,
       },
       avaible: {
