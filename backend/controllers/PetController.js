@@ -116,7 +116,7 @@ module.exports = class PetController {
 
     if (!pet) {
       res.status(404).json({ message: "Pet não encontrado" });
-      return
+      return;
     }
 
     res.status(200).json({ pet: pet });
@@ -136,7 +136,7 @@ module.exports = class PetController {
 
     if (!pet) {
       res.status(404).json({ message: "Pet não encontrado" });
-      return
+      return;
     }
 
     //verificar se o usuario logado é quem vai excluir o pet
@@ -147,7 +147,7 @@ module.exports = class PetController {
       res
         .status(422)
         .json({ message: "Houve um problema em processar a sua solicitação" });
-      return
+      return;
     }
 
     await Pet.findByIdAndRemove(id);
@@ -155,21 +155,21 @@ module.exports = class PetController {
     res.status(200).json({ message: "Pet removido com sucesso" });
   }
 
-  static async updatePet (req, res){
+  static async updatePet(req, res) {
     const id = req.params.id;
 
     const { name, age, weight, color, available } = req.body;
 
     const images = req.files;
-    
+
     //objeto vazio para atualizar o pet
-    let updatedData = {}
+    let updatedData = {};
 
     const pet = await Pet.findOne({ _id: id });
 
     if (!pet) {
       res.status(404).json({ message: "Pet não encontrado" });
-      return
+      return;
     }
 
     //verificar se o usuario logado é quem vai excluir o pet
@@ -180,7 +180,7 @@ module.exports = class PetController {
       res
         .status(422)
         .json({ message: "Houve um problema em processar a sua solicitação" });
-      return
+      return;
     }
 
     //validações
@@ -188,44 +188,91 @@ module.exports = class PetController {
       res.status(422).json({ message: "o nome é obrigatorio" });
       return;
     } else {
-      updatedData.name = name
+      updatedData.name = name;
     }
 
     if (!age) {
       res.status(422).json({ message: "a idade é obrigatoria" });
       return;
     } else {
-      updatedData.age = age
+      updatedData.age = age;
     }
 
     if (!weight) {
       res.status(422).json({ message: "o peso é obrigatorio" });
       return;
     } else {
-      updatedData.weight = weight
+      updatedData.weight = weight;
     }
-    
+
     if (!color) {
       res.status(422).json({ message: "a cor é obrigatoria" });
       return;
     } else {
-      updatedData.color = color
+      updatedData.color = color;
     }
-    
+
     if (images.length === 0) {
       res.status(422).json({ message: "a imagem é obrigatoria" });
       return;
     } else {
-      updatedData.images = []
+      updatedData.images = [];
       images.map((image) => {
-        updatedData.images.push(image.filename)
-      })
+        updatedData.images.push(image.filename);
+      });
     }
 
-    await Pet.findByIdAndUpdate(id, updatedData)
+    await Pet.findByIdAndUpdate(id, updatedData);
 
     res.status(200).json({ message: "Pet atualizado com sucesso" });
+  }
 
+  static async schedule(req, res) {
+    const id = req.params.id;
 
+    //verificar se existe pet
+    const pet = await Pet.findOne({ _id: id });
+
+    if (!pet) {
+      res.status(404).json({ message: "Pet não encontrado" });
+      return;
+    }
+
+    //verificar se o pet não é do usuario
+    const token = getToken(req);
+    const user = await getUserByToken(token);
+
+    //pet.user._id.equals() //outra forma
+    if (pet.user._id.toString() === user._id.toString()) {
+      res
+        .status(422)
+        .json({ message: "você não pode agendar visita com seu proprio pet" });
+      return;
+    }
+
+    // verificar se não tem visita marcada
+    if (pet.adopter) {
+      if (pet.adopter._id.equals(user._id)) {
+        res
+          .status(422)
+          .json({ message: "você já agendou uma visita com este pet" });
+        return;
+      }
+    }
+
+    // adicionar usuario do pet
+    pet.adopter = {
+      _id: user._id,
+      name: user.name,
+      image: user.image,
+    };
+
+    await Pet.findByIdAndUpdate(id, pet);
+    
+    res
+      .status(200)
+      .json({
+        message: `A visita foi agendada com sucesso, entre em contato com ${pet.user.name} pelo telefone ${pet.user.phone}`,
+      });
   }
 };
