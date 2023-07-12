@@ -6,6 +6,7 @@ const PetController = require("../controllers/PetController");
 const verifyToken = require("../helpers/verify-token");
 const { imageUpload } = require("../helpers/image-upload");
 
+//organizar as rotas
 router.post(
   "/create",
   verifyToken,
