@@ -10,7 +10,7 @@ mongodb://localhost:27017
 secret do jwt fazer uma env
 trocar require por importer
 trocar o nome da conecção
-adicionais mais detalhes na conexão
+adicionais console.log na conexão
 adicionar outra opção de coneção para poder hospedar
 trocar a exportação por outra, atual: module.exports
 tirar o return de algumas função? ou mudar?
