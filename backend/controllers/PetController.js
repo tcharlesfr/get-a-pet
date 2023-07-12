@@ -268,11 +268,42 @@ module.exports = class PetController {
     };
 
     await Pet.findByIdAndUpdate(id, pet);
-    
-    res
-      .status(200)
-      .json({
-        message: `A visita foi agendada com sucesso, entre em contato com ${pet.user.name} pelo telefone ${pet.user.phone}`,
-      });
+
+    res.status(200).json({
+      message: `A visita foi agendada com sucesso, entre em contato com ${pet.user.name} pelo telefone ${pet.user.phone}`,
+    });
+  }
+
+  static async concludeAdoption(req, res) {
+    const id = req.params.id;
+
+    //verificar se existe pet
+    const pet = await Pet.findOne({ _id: id });
+
+    if (!pet) {
+      res.status(404).json({ message: "Pet não encontrado" });
+      return;
+    }
+
+    //verificar se o pet não é do usuario
+    const token = getToken(req);
+    const user = await getUserByToken(token);
+
+    //pet.user._id.equals() //outra forma
+    if (pet.user._id.toString() !== user._id.toString()) {
+      res
+        .status(422)
+        .json({ message: "você não pode agendar visita com seu proprio pet" });
+      return;
+    }
+
+    // trocando a disponibilidade do pet
+    pet.avaible = false;
+
+    await Pet.findByIdAndUpdate(id, pet);
+
+    res.status(200).json({
+      message: "Adoção concluida com sucesso", //editado já
+    });
   }
 };
