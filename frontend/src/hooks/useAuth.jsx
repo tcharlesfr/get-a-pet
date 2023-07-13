@@ -2,12 +2,27 @@
 import api from "../utils/api";
 
 import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useFlashMessage from "./useFlashMessage";
 
 export default function useAuth() {
-    //disparador de mensagem
+  //disparador de mensagem
   const { setFlashMessage } = useFlashMessage();
+  //autenticado ou não, começa com false
+  const [authenticated, setAuthenticated] = useState(false);
+  const navigate = useNavigate();
+
+  //pegar o item do local storage
+  //verificar se o token veio
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    //sempre que tiver um requisição com a api já manda o token
+    if (token) {
+      api.defaults.headers.Authorization = `Bearer ${JSON.parse(token)}`;
+      setAuthenticated(true);
+    }
+  }, []);
 
   async function register(user) {
     //mensagens de sucesso e tipo
@@ -18,6 +33,7 @@ export default function useAuth() {
       const data = await api.post("/users/register", user).then((response) => {
         return response.data; //response(data)
       });
+      await authUser(data);
     } catch (error) {
       //mensagens de sucesso e tipo
       msgText = error.response.data.message;
@@ -26,5 +42,15 @@ export default function useAuth() {
 
     setFlashMessage(msgText, msgType);
   }
-  return { register };
+  //recebe dados do registro ou de login com sucesso
+  async function authUser(data) {
+    setAuthenticated(true);
+    //quardar as informações do storage
+    localStorage.setItem("token", JSON.stringify(data.token));
+
+    //mudar a pagina do usuario para home
+    navigate("/");
+  }
+
+  return { authenticated, register };
 }
