@@ -1,9 +1,9 @@
-// import styles from "./Input.module.css";
+import styles from "./Input.module.css";
 
 function Input({ type, text, name, placeholder, value, handleOnChange, multiple }) {
   return (
-    <div>
-        <label htmlFor={name}>{text}:</label>
+    <div className={styles.form_control}>
+        <label htmlFor={name}>{text}</label>
         <input
             type={type}
             name={name}
