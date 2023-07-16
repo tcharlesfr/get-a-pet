@@ -21,7 +21,7 @@ function Navbar() {
         <li>
           <Link to="/">Adotar</Link>
         </li>
-        {/* se o usuario estiver logado e autenticadp aparece x opção e se não estiver aparece para logar ou registrar, o que faz o usuario estar logado ou não é o token,  com a função useAuth ele verifica e muda para true, assim provendo o contexto dos demais componentes*/}
+        {/* se o usuario estiver logado e autenticadp aparece x opção e se não estiver aparece para logar ou registrar, o que faz o usuario estar logado ou não é o token,  com a função useAuth ele verifica e muda para true, assim provendo o contexto dos demais componentes, token fica armazenado no storage do navegaro, f12/aplicativo/armazenamentolocal*/}
         {authenticated ? (
           <>
             <p>logado</p>
