@@ -9,7 +9,7 @@ import { Context } from "../../context/UserContext";
 
 function Navbar() {
   //pega o contexto que tem o acesso
-  const authenticated = useContext(Context);
+  const { authenticated, logout } = useContext(Context);
 
   return (
     <nav className={styles.navbar}>
@@ -24,7 +24,7 @@ function Navbar() {
         {/* se o usuario estiver logado e autenticadp aparece x opção e se não estiver aparece para logar ou registrar, o que faz o usuario estar logado ou não é o token,  com a função useAuth ele verifica e muda para true, assim provendo o contexto dos demais componentes, token fica armazenado no storage do navegaro, f12/aplicativo/armazenamentolocal*/}
         {authenticated ? (
           <>
-            <p>logado</p>
+            <li onClick={logout}>Sair</li>
           </>
         ) : (
           <>
