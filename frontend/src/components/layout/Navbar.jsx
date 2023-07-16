@@ -1,24 +1,41 @@
 import { Link } from "react-router-dom";
-import styles from './Navbar.module.css'
-import Logo from '../../assets/img/pata2.png'
+import styles from "./Navbar.module.css";
+import Logo from "../../assets/img/pata2.png";
+
+import { useContext } from "react";
+
+// contexto do usuario
+import { Context } from "../../context/UserContext";
 
 function Navbar() {
+  //pega o contexto que tem o acesso
+  const authenticated = useContext(Context);
+
   return (
     <nav className={styles.navbar}>
-        <div className={styles.navbar_logo}>
-            <img src={Logo} alt="logo" />
-            <h2>Get A Pet</h2>
-        </div>
+      <div className={styles.navbar_logo}>
+        <img src={Logo} alt="logo" />
+        <h2>Get A Pet</h2>
+      </div>
       <ul>
         <li>
           <Link to="/">Adotar</Link>
         </li>
-        <li>
-          <Link to="/login">Entrar</Link>
-        </li>
-        <li>
-          <Link to="/register">Cadastrar</Link>
-        </li>
+        {/* se o usuario estiver logado e autenticadp aparece x opção e se não estiver aparece para logar ou registrar, o que faz o usuario estar logado ou não é o token,  com a função useAuth ele verifica e muda para true, assim provendo o contexto dos demais componentes*/}
+        {authenticated ? (
+          <>
+            <p>logado</p>
+          </>
+        ) : (
+          <>
+            <li>
+              <Link to="/login">Entrar</Link>
+            </li>
+            <li>
+              <Link to="/register">Cadastrar</Link>
+            </li>
+          </>
+        )}
       </ul>
     </nav>
   );
