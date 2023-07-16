@@ -9,6 +9,7 @@ import Message from "./components/layout/Message";
 import Login from "./components/pages/Auth/Login";
 import Register from "./components/pages/Auth/Register";
 import Home from "./components/pages/Home";
+import Profile from "./components/pages/User/Profile";
 
 //contextos
 //abraça todos componentes dando a possibildiade de acessarem o contexto do usuario
@@ -22,9 +23,10 @@ function App() {
         <Message />
         <Container>
           <Routes>
+          <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/" element={<Home />} />
+            <Route path="/user/profile" element={<Profile />} />
           </Routes>
         </Container>
         <Footer />
