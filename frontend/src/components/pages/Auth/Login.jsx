@@ -6,13 +6,25 @@ import styles from '../../form/Form.module.css'
 import { Context } from "../../../context/UserContext";
 import { Link } from "react-router-dom";
 
-function Login() {
-    function handleChange(e){}
+ function Login() {
+    const [user, setUser] = useState({})
+    const { login } = useContext(Context)
+
+    function handleChange(e){
+      //spread operator, pega o objeto atual e vai substituindo com os dados enviados, pegando o nome da propriedade e adicionando o valor
+      setUser({...user, [e.target.name]: e.target.value})
+    }
+
+    function handleSubmit(e){
+      //previnir que o formulario seja submetido quando submeter o envio
+      e.preventDefault()
+      login(user)
+    }
 
     return (
       <section className={styles.form_container}>
         <h1>Login</h1>
-        <form>
+        <form onSubmit={handleSubmit}>
           <Input
             text="E-mail"
             type="email"

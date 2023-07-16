@@ -43,6 +43,27 @@ export default function useAuth() {
     setFlashMessage(msgText, msgType);
   }
   //recebe dados do registro ou de login com sucesso
+  
+  async function login(user) {
+    //mandar mensagem de logout
+    let msgText = "Login realizado com sucesso";
+    let msgType = "success";
+    //tratanto erro de login
+    try {
+      //pegar o dados e logar pelo token, enviar o usuaro(senha e email)
+      const data = await api.post('users/login', user).then((response) => {
+        return response.data
+      })
+      //se deu certo recebe o token, 
+      await authUser(data)
+    } catch (error) {
+      msgText = error.response.data.message
+      msgType = 'error'
+    }
+    setFlashMessage(msgText, msgType);
+
+  }
+
   async function authUser(data) {
     setAuthenticated(true);
     //quardar as informações do storage
@@ -52,23 +73,22 @@ export default function useAuth() {
     navigate("/");
   }
 
-  function logout(){
+  function logout() {
     //mandar mensagem de logout
-    const msgText = 'Logout realizado com sucesso'
-    const msgType = 'sucess'
-    
-    //colocar como desautenticado
-    setAuthenticated(false)
-    //remover autenticação do storage
-    localStorage.removeItem("token")
-    //tirar da api o token
-    api.defaults.headers.Authorization = undefined
-    //direcionar par a home
-    navigate('/')
+    const msgText = "Logout realizado com sucesso";
+    const msgType = "sucess";
 
-    setFlashMessage(msgText, msgType)
+    //colocar como desautenticado
+    setAuthenticated(false);
+    //remover autenticação do storage
+    localStorage.removeItem("token");
+    //tirar da api o token
+    api.defaults.headers.Authorization = undefined;
+    //direcionar par a home
+    navigate("/");
+
+    setFlashMessage(msgText, msgType);
   }
 
-
-  return { authenticated, register, logout };
+  return { authenticated, register, logout, login };
 }
