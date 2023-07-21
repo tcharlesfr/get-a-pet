@@ -1,3 +1,5 @@
+//importar api para utilizar as conexoes
+import api from '../../../utils/api'
 import { useState, useEffect } from 'react';
 
 import styles from './Profile.module.css'
@@ -6,6 +8,21 @@ import Input from '../../form/Input'
 
 function Profile() {
   const [user, setUser] = useState({})
+  //pegar o token com informações do storage
+  const [token] = useState(localStorage.getItem('token') || '')
+
+
+  useEffect(() => {
+    //checar o usuario
+    api.get('/users/checkuser', {
+      headers: {
+        //garantindo que o token vai ser enviado da forma correta
+        Authorization: `Bearer ${JSON.parse(token)}`
+      }
+    }).then((response) => {
+      setUser(response.data)
+    })
+  }, [token])
 
   function onFileChange(e){
     
