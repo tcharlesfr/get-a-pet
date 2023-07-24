@@ -8,8 +8,10 @@ import Input from "../../form/Input";
 
 import useFlashMessage from "../../../hooks/useFlashMessage";
 
+
 function Profile() {
   const [user, setUser] = useState({});
+  const [preview, setPreview] = useState()
   //pegar o token com informações do storage
   const [token] = useState(localStorage.getItem("token") || "");
   const { setFlashMessage } = useFlashMessage()
@@ -29,6 +31,9 @@ function Profile() {
   }, [token]);
 
   function onFileChange(e) {
+    //mudar o preview, quando o usuario adiciona a primeira imagem
+    //ou quando o usuario muda de imagem
+    setPreview(e.target.files[0])
     setUser({ ...user, [e.target.name]: e.target.files[0] }); //pegar o objeto atual e adicionar
   }
 
@@ -72,7 +77,14 @@ function Profile() {
     <section>
       <div className={styles.profile_header}>
         <h1>Perfil</h1>
-        <p>imagem</p>
+        {/* se tiver alguma imagem ou preview imprime 
+            criar um url baseado no objeto da imagem, se o usuario trocou a imagem se tem um preview
+            se não acessa a api
+        */}
+        
+        {(user.image || preview) && (          
+          <img src={preview ? URL.createObjectURL(preview) : `${process.env.REACT_APP_API}/images/users/${user.image}`} alt={user.name} />
+        )}
       </div>
       <form
         onSubmit={handleSubmit}
