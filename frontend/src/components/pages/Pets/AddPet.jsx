@@ -50,7 +50,7 @@ function AddPet() {
     setFlashMessage(data.message, msgType);
     //enviando o usuario para area de seus pets caso n tenha erros
     if (msgType !== "error") {
-      navigate("/pets/mypets");
+      navigate("/pet/mypets");
     }
   }
 
