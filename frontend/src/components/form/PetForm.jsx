@@ -29,8 +29,8 @@ function PetForm({ handleSubmit, petData, btnText }) {
   function submit(e) {
     e.preventDefault();
     //passar evento/função por props, enviando o objeto para a função de adicionr e editar
-    //handleSubmit(pet)
-    console.log(pet);
+    handleSubmit(pet)
+    // console.log(pet);
   }
 
   return (
