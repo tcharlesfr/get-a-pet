@@ -197,7 +197,6 @@ module.exports = class PetController {
     } else {
       updatedData.age = age;
     }
-
     if (!weight) {
       res.status(422).json({ message: "o peso é obrigatorio" });
       return;
