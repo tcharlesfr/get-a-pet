@@ -34,7 +34,7 @@ function Home() {
               ></div>
               <h3>{pet.name}</h3>
               <p>
-                <span className="bold">{pet.weight}kg</span>
+                <span className="bold">Peso: </span>{pet.weight}kg
               </p>
               {pet.available ? (
                 <Link to={`pet/${pet._id}`}>mais detalhes</Link>
