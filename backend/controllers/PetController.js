@@ -212,7 +212,7 @@ module.exports = class PetController {
       updatedData.color = color;
     }
 
-    if (images.length > 0){
+    if (images.length>0){
       updatedData.images = [];
       images.map((image) => {
         updatedData.images.push(image.filename);
