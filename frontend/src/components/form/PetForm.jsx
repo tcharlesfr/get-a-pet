@@ -5,7 +5,7 @@ import Input from "./Input";
 import Select from "./Select";
 
 function PetForm({ handleSubmit, petData, btnText }) {
-  const [pet, setPet] = useState(petData || {});
+  const [pet, setPet] = useState( petData || {});
   const [preview, setPreview] = useState([]);
   const colors = ["Branco", "Preto", "Cinza", "Caramelo", "Mesclado"];
 
@@ -46,9 +46,9 @@ function PetForm({ handleSubmit, petData, btnText }) {
                   key={`${pet.name}+${index}`}
                 />
               ))
-            : //se tiver imagens do pet imprime se não entra na condição
-              pet.images &&
-              pet.image.map((image, index) => (
+            : //se tiver imagens do pet imprime se não entra na condição            
+            pet.images &&
+              pet.images.map((image, index) => (
                 <img
                   src={`${process.env.REACT_APP_API}/images/pets/${image}`}
                   alt={pet.name}
