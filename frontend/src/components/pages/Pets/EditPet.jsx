@@ -56,7 +56,7 @@ function EditPet() {
             return response.data
         }).catch((err) => {
             msgType = 'error'
-            return err.response.data
+            return err.response.dataz
         })
 
         setFlashMessage(data.message, msgType)
