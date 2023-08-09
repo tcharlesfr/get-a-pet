@@ -20,6 +20,26 @@ function PetDetails() {
     });
   }, [id]);
 
+  async function schedule() {
+    let msgType = "sucess";
+
+    const data = await api({
+        method:'patch',
+        url:`/pets/schedule/${pet._id}`,
+        headers:{
+            Authorization:`Bearer ${JSON.parse(token)}`
+        }
+    }).then((response) => {
+        return response.data
+    })
+    .catch((err) => {
+        msgType='error'
+        return err.response.data
+    })
+
+    setFlashMessage(data.message, msgType);
+  }
+
   return (
     <>
       {pet.name && (
@@ -38,16 +58,21 @@ function PetDetails() {
             ))}
           </div>
           <p>
-            <span className="bold">Peso: </span>{pet.weight}kg
+            <span className="bold">Peso: </span>
+            {pet.weight}kg
           </p>
           <p>
-            <span className="bold">Idade: </span>{pet.age} anos
+            <span className="bold">Idade: </span>
+            {pet.age} anos
           </p>
-                {token ? (
-                    <button>solicitar uma visita</button>
-                ) : (
-                    <p>Você precisa <Link to='/register'>criar uma conta</Link> para solicitar uma visita</p>
-                )}
+          {token ? (
+            <button onClick={schedule}>solicitar uma visita</button>
+          ) : (
+            <p>
+              Você precisa <Link to="/register">criar uma conta</Link> para
+              solicitar uma visita
+            </p>
+          )}
         </section>
       )}
     </>
