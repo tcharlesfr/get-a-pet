@@ -18,6 +18,7 @@ import PetDetails from "./components/pages/Pets/PetDetails";
 //abraça todos componentes dando a possibildiade de acessarem o contexto do usuario
 import { UserProvider } from "./context/UserContext";
 import EditPet from "./components/pages/Pets/EditPet";
+import MyAdoptions from "./components/pages/Pets/MyAdoptions";
 
 function App() {
   return (
@@ -34,8 +35,8 @@ function App() {
             <Route path="/pet/mypets" element={<MyPets />} />
             <Route path="/pet/add" element={<AddPet />} />
             <Route path="/pet/edit/:id" element={<EditPet />} />
+            <Route path="/pet/myadoptions" element={<MyAdoptions />} />
             <Route path="/pet/:id" element={<PetDetails />} />
-
           </Routes>
         </Container>
         <Footer />
