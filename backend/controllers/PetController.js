@@ -294,7 +294,7 @@ module.exports = class PetController {
     }
 
     // trocando a disponibilidade do pet
-    pet.avaible = false;
+    pet.available = false;
 
     await Pet.findByIdAndUpdate(id, pet);
 
